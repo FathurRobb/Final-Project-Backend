@@ -13,6 +13,9 @@ module.exports = (sequelize, Sequelize) => {
             userId: {
                 type: Sequelize.INTEGER,
             },
+            title: {
+                type: Sequelize.STRING,
+            },
             image: {
                 type: Sequelize.STRING,
             },

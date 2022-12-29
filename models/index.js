@@ -17,7 +17,7 @@ db.categories = require('./Categories')(sequelize, Sequelize);
 db.posts = require('./Posts')(sequelize, Sequelize);
 
 db.posts.belongsTo(db.categories, {
-    foreignKey: 'category_id',
+    foreignKey: 'categoryId',
     onDelete: 'cascade',
     as: 'category'
 })

@@ -12,11 +12,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("assets"));
 
-db.sequelize.sync({alter: true}).then(() => {
+db.sequelize.sync().then(() => {
     console.log("synchronize the database");
+}).catch((error) => {
+    console.error(error);
 });
 
 require('./routes/category.route')(app);
+require('./routes/post.route')(app);
 
 app.listen(PORT, () => {
     console.log("Sserver is running at port " + PORT);
