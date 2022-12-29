@@ -20,6 +20,7 @@ db.sequelize.sync().then(() => {
 
 require('./routes/category.route')(app);
 require('./routes/post.route')(app);
+require('./routes/archive.route')(app);
 
 app.listen(PORT, () => {
     console.log("Sserver is running at port " + PORT);
