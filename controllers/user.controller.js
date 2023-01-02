@@ -3,6 +3,7 @@ const db = require('../models');
 const Bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = db.users;
+const Role = db.roles;
 
 const JWT_SECRET_KEY = 'finalprojectteam4';
 
@@ -21,17 +22,6 @@ exports.signup = async (req, res) => {
             if (!user) {
                 const hash = Bcrypt.hashSync(userData.password, 10);
                 userData.password = hash;
-                if(userData.role_id == 1){
-                    userData.role_name = 'Super Admin';
-                }else if(userData.role_id == 2){
-                    userData.role_name = 'Editor';
-                }else if(userData.role_id == 3){
-                    userData.role_name = 'Doctor';
-                }else if(userData.role_id == 4){
-                    userData.role_name = 'Guest';
-                }else{
-                    userData.role_name = 'Unknown';
-                }
                 User.create(userData)
                     .then((user) => {
                         res.json({ status: user.email + ' registered!' });
@@ -77,3 +67,41 @@ exports.login = async (req, res) => {
             res.status(400).json({ error: err });
         });
 };
+
+exports.addRole = async (req, res) => {
+    const roleData = {
+        role_name: req.body.role_name,
+    };
+
+    Role.findOne({ where: { role_name: roleData.role_name } })
+        .then((role) => {
+            if (!role) {
+                Role.create(roleData)
+                    .then((role) => {
+                        res.json({ status: role.role_name + ' inserted!' });
+                    })
+                    .catch((err) => {
+                        res.send('error: ' + err);
+                    });
+            }
+            else {
+                res.json({ error: 'Role already exists' });
+            }
+        })
+        .catch((err) => {
+            res.send('error: ' + err);
+        }
+    );
+
+}
+
+exports.getRole = async (req, res) => {
+    Role.findAll()
+        .then((roles) => {
+            res.json(roles);
+        })
+        .catch((err) => {
+            res.send('error: ' + err);
+        }
+    );
+}

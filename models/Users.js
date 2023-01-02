@@ -13,11 +13,8 @@ module.exports = (sequelize, Sequelize) => {
             last_name:{
                 type: Sequelize.STRING,
             },
-            role_id: {
+            roleId: {
                 type: Sequelize.INTEGER,
-            },
-            role_name: {
-                type: Sequelize.STRING,
             },
             email: {
                 type: Sequelize.STRING,
