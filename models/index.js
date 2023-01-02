@@ -16,6 +16,7 @@ db.sequelize = sequelize;
 db.categories = require('./Categories')(sequelize, Sequelize);
 db.posts = require('./Posts')(sequelize, Sequelize);
 db.archives = require('./Archives')(sequelize, Sequelize);
+db.users = require('./Users')(sequelize, Sequelize);
 
 db.posts.belongsTo(db.categories, {
     foreignKey: 'categoryId',
