@@ -25,6 +25,12 @@ db.posts.belongsTo(db.categories, {
     as: 'category'
 });
 
+db.posts.belongsTo(db.users, {
+    foreignKey: 'userId',
+    onDelete: 'cascade',
+    as: 'user'
+})
+
 db.archives.belongsTo(db.posts, {
     foreignKey: 'postId',
     onDelete: 'cascade',

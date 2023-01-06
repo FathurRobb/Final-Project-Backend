@@ -138,8 +138,7 @@ exports.getAll = async (req, res) => {
         let query = {
             offset: offset,
             limit: limit,
-            order: [['createdAt', 'DESC']],
-            include: ['category']
+            order: [['createdAt', 'DESC']]
         }
         
         if (search) {
@@ -191,7 +190,7 @@ exports.getById = async (req, res) => {
     try {
         const { id } = req.params;
         const data = await Post.findByPk(id, {
-            include: ['category'],
+            include: ['category','user'],
         });
 
         if (data) {
