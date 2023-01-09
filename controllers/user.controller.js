@@ -109,6 +109,37 @@ exports.addRole = async (req, res) => {
     });
 };
 
+exports.updateRole = async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { role_name } = req.body;
+
+      const existsRole = await Role.findOne({
+          where: {
+              id
+          },
+      });
+
+      if (existsRole) {
+          existsRole.role_name = role_name;
+
+          await existsRole.save();
+          return res.status(200).json({
+              message: "Role has been edited"
+          });
+      } else {
+          return res.status(404).json({
+              message: "Role not found",
+          });
+      }
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+          message: error
+      });
+  }
+};
+
 exports.getRole = async (req, res) => {
   Role.findAll()
     .then((roles) => {

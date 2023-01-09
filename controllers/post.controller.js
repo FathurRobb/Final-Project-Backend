@@ -130,7 +130,7 @@ exports.destroy = async (req, res) => {
 exports.getAll = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 0;
-        const limit = parseInt(req.query.limit) || 5;
+        const limit = parseInt(req.query.limit) || await Post.count({});
         const search = req.query.search_query || "";
         const category_id = req.query.categoryId;
         const user_id = req.query.userId;

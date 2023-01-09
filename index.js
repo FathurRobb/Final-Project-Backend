@@ -33,25 +33,25 @@ function initialRole() {
     Role.create(
         {
             id: 1,
-            role_name: 'admin'
+            role_name: 'Admin'
         },
     );
     Role.create(
         {
             id: 2,
-            role_name: 'editor'
+            role_name: 'Editor'
         },
     );
     Role.create(
         {
             id: 3,
-            role_name: 'doctor'
+            role_name: 'Doctor'
         },
     );
     Role.create(
         {
             id: 4,
-            role_name: 'visitor'
+            role_name: 'Visitor'
         },
     );   
 }

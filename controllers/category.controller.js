@@ -83,7 +83,7 @@ exports.destroy = async (req, res) => {
 exports.getAll = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 0;
-        const limit = parseInt(req.query.limit) || 10;
+        const limit = parseInt(req.query.limit) || await Category.count({});
         const search = req.query.search_query || "";
         const offset = limit * page;
         const totalRows = await Category.count({
