@@ -18,6 +18,9 @@ db.posts = require('./Posts')(sequelize, Sequelize);
 db.archives = require('./Archives')(sequelize, Sequelize);
 db.users = require('./Users')(sequelize, Sequelize);
 db.roles = require('./Roles')(sequelize, Sequelize);
+db.comments = require('./Comments')(sequelize, Sequelize);
+db.questions = require('./Questions')(sequelize, Sequelize);
+db.answers = require('./Answers')(sequelize, Sequelize);
 
 db.posts.belongsTo(db.categories, {
     foreignKey: 'categoryId',
@@ -29,7 +32,7 @@ db.posts.belongsTo(db.users, {
     foreignKey: 'userId',
     onDelete: 'cascade',
     as: 'user'
-})
+});
 
 db.archives.belongsTo(db.posts, {
     foreignKey: 'postId',
@@ -46,6 +49,46 @@ db.users.belongsTo(db.roles, {
 db.roles.hasMany(db.users, {
     foreignKey: 'roleId',
     as: 'users'
+});
+
+db.comments.belongsTo(db.users, {
+    foreignKey: 'userId',
+    onDelete: 'cascade',
+    as: 'user'
+});
+
+db.posts.hasMany(db.comments, {
+    foreignKey: 'postId',
+    as: 'comments'
+});
+
+db.questions.belongsTo(db.categories, {
+    foreignKey: 'categoryId',
+    onDelete: 'cascade',
+    as: 'category'
+});
+
+db.questions.belongsTo(db.users, {
+    foreignKey: 'userId',
+    onDelete: 'cascade',
+    as: 'user'
+});
+
+db.questions.hasMany(db.answers, {
+    foreignKey: 'questionId',
+    as: 'answers'
+});
+
+db.answers.belongsTo(db.questions, {
+    foreignKey: 'questionId',
+    onDelete: 'cascade',
+    as: 'question'
+});
+
+db.answers.belongsTo(db.users, {
+    foreignKey: 'userId',
+    onDelete: 'cascade',
+    as: 'user'
 });
 
 module.exports = db;

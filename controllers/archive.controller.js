@@ -73,7 +73,7 @@ exports.getArchived = async (req, res) => {
             offset: offset,
             limit: limit,
             order: [['createdAt', 'DESC']],
-            include: { all: true, nested: true }
+            include: ['post']
         });
 
         return res.status(200).json({

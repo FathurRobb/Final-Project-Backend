@@ -190,7 +190,7 @@ exports.getById = async (req, res) => {
     try {
         const { id } = req.params;
         const data = await Post.findByPk(id, {
-            include: ['category','user'],
+            include: { all: true, nested: true },
         });
 
         if (data) {

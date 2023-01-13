@@ -24,6 +24,9 @@ require('./routes/category.route')(app);
 require('./routes/post.route')(app);
 require('./routes/archive.route')(app);
 require('./routes/user.route')(app);
+require('./routes/comment.route')(app);
+require('./routes/question.route')(app);
+require('./routes/answer.route')(app);
 
 app.listen(PORT, () => {
     console.log("Server is running at port " + PORT);
