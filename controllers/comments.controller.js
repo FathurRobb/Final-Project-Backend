@@ -5,12 +5,12 @@ const Comment = db.comments;
 // Create and Save a new Comment
 exports.addComment = async (req, res) => {
     try {
-        const { postId } = req.params;
+        const { id } = req.params;
 
         const { userId, comment } = req.body;
 
         await Comment.create({
-            postId,
+            postId: id,
             userId,
             comment
         });
