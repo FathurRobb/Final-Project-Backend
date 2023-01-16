@@ -45,7 +45,7 @@ exports.signup = async (req, res) => {
             res.send("error: " + err);
           });
       } else {
-        res.json({ error: "User already exists" });
+        res.status(400).json({ message: "User already exists" });
       }
     })
     .catch((err) => {
@@ -74,14 +74,14 @@ exports.login = async (req, res) => {
             }
           );
         } else {
-          res.status(400).json({ error: "Invalid password" });
+          res.status(400).json({ message: "Email or password is incorrect" });
         }
       } else {
-        res.status(400).json({ error: "User does not exist" });
+        res.status(400).json({ message: "User does not exist" });
       }
     })
     .catch((err) => {
-      res.status(400).json({ error: err });
+      res.status(400).json({ message: "Something went wrong" });
     });
 };
 
