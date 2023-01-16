@@ -101,7 +101,7 @@ exports.getAll = async (req, res) => {
             offset,
             limit,
             order: [['createdAt', 'DESC']],
-            include: ['user']
+            include: ['user','answers']
         }
         
         if (search) {
@@ -129,9 +129,20 @@ exports.getAll = async (req, res) => {
         });
         const totalPage = Math.ceil(totalRows / limit);
         const questions = await Question.findAll(query);
+        const data = questions.map(q => ({
+            id: q.id,
+            categoryId: q.categoryId,
+            userId: q.userId,
+            fullName: q.user.first_name+" "+q.user.last_name,
+            title: q.title,
+            content: q.content,
+            answers: q.answers.length,
+            createdAt: q.createdAt,
+            updatedAt: q.updatedAt
+        }));
         
         return res.status(200).json({
-            data: questions,
+            data,
             page,
             limit,
             totalRows,
