@@ -3,10 +3,9 @@ const Question = db.questions;
 const Answer = db.answers;
 
 exports.create = async (req, res) => {
+    const { questionId } = req.params
+    const { userId, content } = req.body;
     try {
-        const { questionId } = req.params
-        const { userId, content } = req.body;
-
         const existsQuestion = await Question.findOne({
             where: {
                 id: questionId
@@ -37,10 +36,9 @@ exports.create = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
+    const { id } = req.params;
+    const { questionId, userId, content } = req.body;
     try {
-        const { id } = req.params;
-        const { questionId, userId, content } = req.body;
-
         const existsAnswer = await Answer.findOne({
             where: {
                 id
@@ -71,9 +69,8 @@ exports.update = async (req, res) => {
 };
 
 exports.destroy = async (req, res) => {
+    const { id } = req.params;
     try {
-        const { id } = req.params;
-
         const existsAnswer = await Answer.findOne({
             where: {
                 id

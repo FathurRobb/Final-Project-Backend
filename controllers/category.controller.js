@@ -3,9 +3,8 @@ const db = require('../models');
 const Category = db.categories;
 
 exports.create = async (req, res) => {
+    const { name } = req.body;
     try {
-        const { name } = req.body;
-        
         await Category.create({
             name,
         });
@@ -22,10 +21,9 @@ exports.create = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
     try {
-        const { id } = req.params;
-        const { name } = req.body;
-
         const existsCategory = await Category.findOne({
             where: {
                 id
@@ -53,9 +51,8 @@ exports.update = async (req, res) => {
 };
 
 exports.destroy = async (req, res) => {
+    const { id } = req.params;
     try {
-        const { id } = req.params;
-
         const existsCategory = await Category.findOne({
             where: {
                 id
@@ -84,7 +81,7 @@ exports.getAll = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 0;
         const limit = parseInt(req.query.limit) || await Category.count({});
-        const search = req.query.search_query || "";
+        const search = req.query.searchQuery || "";
         const offset = limit * page;
         const totalRows = await Category.count({
             where: {
@@ -100,17 +97,17 @@ exports.getAll = async (req, res) => {
                     [Op.like]: '%'+search+'%'
                 }}]
             },
-            offset: offset,
-            limit: limit,
+            offset,
+            limit,
             order: [['id', 'DESC']]
         });
 
         return res.status(200).json({
             data: categories,
-            page: page,
-            limit: limit,
-            totalRows: totalRows,
-            totalPage: totalPage,
+            page,
+            limit,
+            totalRows,
+            totalPage,
         });
     } catch (error) {
         console.error(error);

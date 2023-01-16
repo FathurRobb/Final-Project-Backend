@@ -4,8 +4,8 @@ const Post = db.posts;
 const Archive = db.archives;
 
 exports.actionArchived = async (req, res) => {
+    const { userId, postId } = req.body;
     try {
-        const { userId, postId } = req.body;
         const post = await Post.findByPk(postId)
 
         if (post) {
@@ -49,7 +49,7 @@ exports.getArchived = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 0;
         const limit = parseInt(req.query.limit) || await Archive.count({});
-        const search = req.query.search_query || "";
+        const search = req.query.searchQuery || "";
         const offset = limit * page;
         const totalRows = await Archive.count({
             where: {
@@ -70,18 +70,18 @@ exports.getArchived = async (req, res) => {
                     [Op.like]: '%'+search+'%'
                 }},]
             },
-            offset: offset,
-            limit: limit,
+            offset,
+            limit,
             order: [['createdAt', 'DESC']],
             include: ['post']
         });
 
         return res.status(200).json({
             data: archives,
-            page: page,
-            limit: limit,
-            totalRows: totalRows,
-            totalPage: totalPage,
+            page,
+            limit,
+            totalRows,
+            totalPage,
         });
     } catch (error) {
         console.error(error);

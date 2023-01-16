@@ -3,9 +3,8 @@ const db = require('../models');
 const Question = db.questions;
 
 exports.create = async (req, res) => {
+    const { categoryId, userId, title, content } = req.body;
     try {
-        const { categoryId, userId, title, content } = req.body;
-
         await Question.create({
             categoryId,
             userId,
@@ -25,10 +24,9 @@ exports.create = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
+    const { id } = req.params;
+    const { categoryId, userId, title, content } = req.body;
     try {
-        const { id } = req.params;
-        const { categoryId, userId, title, content } = req.body;
-
         const existsQuestion = await Question.findOne({
             where: {
                 id
@@ -65,9 +63,8 @@ exports.update = async (req, res) => {
 };
 
 exports.destroy = async (req, res) => {
+    const { id } = req.params;
     try {
-        const { id } = req.params;
-
         const existsQuestion = await Question.findOne({
             where: {
                 id
@@ -97,12 +94,12 @@ exports.getAll = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 0;
         const limit = parseInt(req.query.limit) || await Question.count({});
-        const search = req.query.search_query || "";
+        const search = req.query.searchQuery || "";
         const category_id = req.query.categoryId;
         const offset = limit * page;
         let query = {
-            offset: offset,
-            limit: limit,
+            offset,
+            limit,
             order: [['createdAt', 'DESC']],
             include: ['user']
         }
@@ -135,10 +132,10 @@ exports.getAll = async (req, res) => {
         
         return res.status(200).json({
             data: questions,
-            page: page,
-            limit: limit,
-            totalRows: totalRows,
-            totalPage: totalPage,
+            page,
+            limit,
+            totalRows,
+            totalPage,
         });
     } catch (error) {
         console.error(error);
@@ -149,8 +146,8 @@ exports.getAll = async (req, res) => {
 };
 
 exports.getById = async (req, res) => {
+    const { id } = req.params;
     try {
-        const { id } = req.params;
         const data = await Question.findByPk(id, {
             include: { all: true, nested: true }
         });

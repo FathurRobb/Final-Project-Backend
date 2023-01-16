@@ -4,11 +4,10 @@ const Comment = db.comments;
 
 // Create and Save a new Comment
 exports.addComment = async (req, res) => {
+    const { id } = req.params;
+
+    const { userId, comment } = req.body;
     try {
-        const { id } = req.params;
-
-        const { userId, comment } = req.body;
-
         await Comment.create({
             postId: id,
             userId,
@@ -50,12 +49,10 @@ exports.getAllComments = async (req, res) => {
 
 // Update a Comment
 exports.updateComment = async (req, res) => {
+    const { id } = req.params;
+
+    const { comment } = req.body;
     try {
-        
-        const { id } = req.params;
-
-        const { comment } = req.body;
-
         const commentToUpdate = await Comment.findOne({
             where: {
                 commentId: id,
@@ -90,11 +87,9 @@ exports.updateComment = async (req, res) => {
 // Delete a Comment
 
 exports.deleteComment = async (req, res) => {
+    // Get comment id from params
+    const { id } = req.params;
     try {
-        
-        // Get comment id from params
-        const { id } = req.params;
-
         // Find comment by id
 
         const comment = await Comment.findOne({
@@ -133,9 +128,8 @@ exports.deleteComment = async (req, res) => {
 // Get Comments by Post Id
 
 exports.getCommentsByPostId = async (req, res) => {
+    const { postId } = req.params;
     try {
-        const { postId } = req.params;
-
         const comments = await Comment.findAll({
             where: {
                 postId
@@ -158,9 +152,8 @@ exports.getCommentsByPostId = async (req, res) => {
 // Get Comments by User Id
 
 exports.getCommentsByUserId = async (req, res) => {
+    const { userId } = req.params;
     try {
-        const { userId } = req.params;
-
         const comments = await Comment.findAll({
             where: {
                 userId

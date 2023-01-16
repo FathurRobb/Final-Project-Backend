@@ -5,16 +5,15 @@ const db = require('../models');
 const Post = db.posts;
 
 exports.create = async (req, res) => {
+    const { userId, categoryId, title, image, content } = req.body;
+    let imageUrl;
     try {
-        const { userId, categoryId, title, image, content } = req.body;
-        let imageUrl;
-
         if (image) {
-            let buff = new Buffer(image.split('base64,')[1], 'base64');
-            let filename = userId.toString()+Date.now();
+            const buff = new Buffer(image.split('base64,')[1], 'base64');
+            const filename = userId.toString()+Date.now();
             const baseImage = {profilepic:image};
-            let mimeType = baseImage.profilepic.match(/[^:/]\w+(?=;|,)/)[0];
-            let dir = path.join(__dirname,"../assets/uploads/posts/"+filename+'.'+mimeType);
+            const mimeType = baseImage.profilepic.match(/[^:/]\w+(?=;|,)/)[0];
+            const dir = path.join(__dirname,"../assets/uploads/posts/"+filename+'.'+mimeType);
             fs.writeFileSync(dir, buff)
             imageUrl = "/uploads/posts/"+filename+'.'+mimeType;
         }
@@ -39,10 +38,9 @@ exports.create = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
+    const { id } = req.params;
+    const { userId, categoryId, title, image, content } = req.body;
     try {
-        const { id } = req.params;
-        const { userId, categoryId, title, image, content } = req.body;
-        
         const existsPost = await Post.findOne({
             where: {
                 id,
@@ -55,12 +53,12 @@ exports.update = async (req, res) => {
             existsPost.title = title;
             existsPost.content = content;
             if (image) {
-                let oldFile = existsPost.image.split('posts/')[1];
-                let buff = new Buffer(image.split('base64,')[1], 'base64');
-                let filename = userId.toString()+Date.now();
+                const oldFile = existsPost.image.split('posts/')[1];
+                const buff = new Buffer(image.split('base64,')[1], 'base64');
+                const filename = userId.toString()+Date.now();
                 const baseImage = {profilepic:image};
-                let mimeType = baseImage.profilepic.match(/[^:/]\w+(?=;|,)/)[0];
-                let dir = path.join(__dirname,"../assets/uploads/posts/"+filename+'.'+mimeType);
+                const mimeType = baseImage.profilepic.match(/[^:/]\w+(?=;|,)/)[0];
+                const dir = path.join(__dirname,"../assets/uploads/posts/"+filename+'.'+mimeType);
                 fs.writeFileSync(dir, buff);
                 existsPost.image = "/uploads/posts/"+filename+'.'+mimeType;
                 fs.unlink(path.join(__dirname,"../assets/uploads/posts")+oldFile, (err) => {
@@ -90,9 +88,8 @@ exports.update = async (req, res) => {
 };
 
 exports.destroy = async (req, res) => {
+    const { id } = req.params;
     try {
-        const { id } = req.params;
-        
         const existsPost = await Post.findOne({
             where: {
                 id
@@ -100,7 +97,7 @@ exports.destroy = async (req, res) => {
         });
 
         if (existsPost) {
-            let oldFile = existsPost.image.split('posts/')[1];
+            const oldFile = existsPost.image.split('posts/')[1];
             fs.unlink(path.join(__dirname,"../assets/uploads/posts/")+oldFile, (err) => {
                 if (err) {
                     res.status(500).send({
@@ -131,13 +128,13 @@ exports.getAll = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 0;
         const limit = parseInt(req.query.limit) || await Post.count({});
-        const search = req.query.search_query || "";
+        const search = req.query.searchQuery || "";
         const category_id = req.query.categoryId;
         const user_id = req.query.userId;
         const offset = limit * page;
         let query = {
-            offset: offset,
-            limit: limit,
+            offset,
+            limit,
             order: [['createdAt', 'DESC']]
         }
         
@@ -173,10 +170,10 @@ exports.getAll = async (req, res) => {
         
         return res.status(200).json({
             data: posts,
-            page: page,
-            limit: limit,
-            totalRows: totalRows,
-            totalPage: totalPage,
+            page,
+            limit,
+            totalRows,
+            totalPage,
         });
     } catch (error) {
         console.error(error);
@@ -187,8 +184,8 @@ exports.getAll = async (req, res) => {
 };
 
 exports.getById = async (req, res) => {
+    const { id } = req.params;
     try {
-        const { id } = req.params;
         const data = await Post.findByPk(id, {
             include: { all: true, nested: true },
         });
