@@ -1,6 +1,8 @@
 const { Op } = require("sequelize");
 const db = require("../models");
 const Bcrypt = require("bcryptjs");
+const fs = require("fs");
+const path = require("path");
 const jwt = require("jsonwebtoken");
 const User = db.users;
 const Role = db.roles;
@@ -37,6 +39,7 @@ exports.signup = async (req, res) => {
         }
 
         userData.password = hash;
+        userData.image = "";
         User.create(userData)
           .then((user) => {
             res.json({ status: user.email + " registered!" });
@@ -70,6 +73,7 @@ exports.login = async (req, res) => {
                 email: user.dataValues.email,
                 token: token,
                 role: role.dataValues.role_name,
+                image: user.dataValues.image,
               });
             }
           );
@@ -84,6 +88,34 @@ exports.login = async (req, res) => {
       res.status(400).json({ message: "Something went wrong" });
     });
 };
+
+exports.getUserInfo = async (req, res) => {
+  const { id } = req.params;
+
+  User.findOne({ where: { id: id } })
+    .then((user) => {
+      if (user) {
+        Role.findOne({ where: { id: user.dataValues.roleId } }).then(
+          (role) => {
+            res.json({
+              id: user.dataValues.id,
+              first_name: user.dataValues.first_name,
+              last_name: user.dataValues.last_name,
+              email: user.dataValues.email,
+              role: role.dataValues.role_name,
+              image: user.dataValues.image,
+            });
+          }
+        );
+      } else {
+        res.status(400).json({ message: "User does not exist" });
+      }
+    })
+    .catch((err) => {
+      res.status(400).json({ message: "Something went wrong" });
+    });
+};
+
 
 exports.addRole = async (req, res) => {
   const roleData = {
@@ -111,32 +143,32 @@ exports.addRole = async (req, res) => {
 
 exports.updateRole = async (req, res) => {
   try {
-      const { id } = req.params;
-      const { role_name } = req.body;
+    const { id } = req.params;
+    const { role_name } = req.body;
 
-      const existsRole = await Role.findOne({
-          where: {
-              id
-          },
+    const existsRole = await Role.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (existsRole) {
+      existsRole.role_name = role_name;
+
+      await existsRole.save();
+      return res.status(200).json({
+        message: "Role has been edited",
       });
-
-      if (existsRole) {
-          existsRole.role_name = role_name;
-
-          await existsRole.save();
-          return res.status(200).json({
-              message: "Role has been edited"
-          });
-      } else {
-          return res.status(404).json({
-              message: "Role not found",
-          });
-      }
+    } else {
+      return res.status(404).json({
+        message: "Role not found",
+      });
+    }
   } catch (error) {
-      console.error(error);
-      return res.status(500).json({
-          message: error
-      });
+    console.error(error);
+    return res.status(500).json({
+      message: error,
+    });
   }
 };
 
@@ -162,4 +194,65 @@ exports.deleteUser = async (req, res) => {
     .catch((err) => {
       res.send("error: " + err);
     });
+};
+
+exports.addImage = async (req, res) => {
+  const { id } = req.params;
+  const { image } = req.body;
+  let imageUrl;
+  try {
+    User.findOne({ where: { id: id } }).then((user) => {
+      if (user) {
+        if (image) {
+          const buff = new Buffer(image.split('base64,')[1], 'base64');
+          const filename = user.dataValues.id + "_" + Date.now();
+          const baseImage = { profilepic: image };
+          const mimeType = baseImage.profilepic.match(/[^:/]\w+(?=;|,)/)[0];
+          const dir = path.join(
+            __dirname,
+            "../assets/uploads/users/" + filename + "." + mimeType
+          );
+          fs.writeFileSync(dir, buff);
+          imageUrl = "/uploads/users/" + filename + "." + mimeType;
+        }
+
+        user.image = imageUrl;
+        user.save();
+        res.json({ status: "Image added!" });
+      } else {
+        res.status(400).json({ message: "User does not exist" });
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: error,
+    });
+  }
+};
+
+exports.deleteImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const existsUser = await User.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (existsUser) {
+      existsUser.image = "";
+
+      await existsUser.save();
+      return res.status(200).json({
+        message: "Image has been deleted",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: error,
+    });
+  }
 };

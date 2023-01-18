@@ -11,7 +11,7 @@ exports.create = async (req, res) => {
         if (image) {
             const buff = new Buffer(image.split('base64,')[1], 'base64');
             const filename = userId.toString()+Date.now();
-            const baseImage = {profilepic:image};
+            const baseImage = { profilepic:image };
             const mimeType = baseImage.profilepic.match(/[^:/]\w+(?=;|,)/)[0];
             const dir = path.join(__dirname,"../assets/uploads/posts/"+filename+'.'+mimeType);
             fs.writeFileSync(dir, buff)
@@ -31,8 +31,9 @@ exports.create = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
+        console.trace();
         return res.status(500).json({
-            message: error
+            message: "Something went wrong"
         });
     }
 };
