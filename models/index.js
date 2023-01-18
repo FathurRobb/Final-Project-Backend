@@ -91,6 +91,6 @@ db.answers.belongsTo(db.users, {
     as: 'user'
 });
 
-db.users.sync({ alter: true });
+// db.users.sync({ alter: true });
 
 module.exports = db;

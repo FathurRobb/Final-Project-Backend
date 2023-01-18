@@ -134,6 +134,7 @@ exports.getAll = async (req, res) => {
             categoryId: q.categoryId,
             userId: q.userId,
             fullName: q.user.first_name+" "+q.user.last_name,
+            image: q.user.image,
             title: q.title,
             content: q.content,
             answers: q.answers.length,
