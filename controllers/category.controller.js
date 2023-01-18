@@ -116,3 +116,18 @@ exports.getAll = async (req, res) => {
         });
     }
 }
+
+exports.getAllData = async (req, res) => {
+    Category.findAll({
+        order: [['id', 'ASC']]
+    }).then(categories => {
+        return res.status(200).json({
+            data: categories
+        });
+    }).catch(error => {
+        console.error(error);
+        return res.status(500).json({
+            message: error
+        });
+    });
+}
