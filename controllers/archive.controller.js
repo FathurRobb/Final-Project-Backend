@@ -50,7 +50,29 @@ exports.getArchived = async (req, res) => {
         const page = parseInt(req.query.page) || 0;
         const limit = parseInt(req.query.limit) || await Archive.count({});
         const search = req.query.searchQuery || "";
+        const user_id = req.query.userId;
         const offset = limit * page;
+        let query = {
+            offset,
+            limit,
+            order: [['createdAt', 'DESC']],
+            include: ['post']
+        };
+
+        if (search) {
+            query.where = {
+                [Op.or]: [{'$post.title$':{
+                    [Op.like]: '%'+search+'%'
+                }},{'$post.content$':{
+                    [Op.like]: '%'+search+'%'
+                }},]
+            }
+        };
+
+        if (user_id) {
+            query.where = [{'userId': user_id}]
+        }
+
         const totalRows = await Archive.count({
             where: {
                 [Op.or]: [{'$post.title$':{
@@ -62,19 +84,7 @@ exports.getArchived = async (req, res) => {
             include: ['post']
         });
         const totalPage = Math.ceil(totalRows / limit);
-        const archives = await Archive.findAll({
-            where: {
-                [Op.or]: [{'$post.title$':{
-                    [Op.like]: '%'+search+'%'
-                }},{'$post.content$':{
-                    [Op.like]: '%'+search+'%'
-                }},]
-            },
-            offset,
-            limit,
-            order: [['createdAt', 'DESC']],
-            include: ['post']
-        });
+        const archives = await Archive.findAll(query);
 
         return res.status(200).json({
             data: archives,
