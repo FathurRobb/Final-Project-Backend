@@ -21,6 +21,8 @@ db.roles = require('./Roles')(sequelize, Sequelize);
 db.comments = require('./Comments')(sequelize, Sequelize);
 db.questions = require('./Questions')(sequelize, Sequelize);
 db.answers = require('./Answers')(sequelize, Sequelize);
+db.services = require('./Services')(sequelize, Sequelize);
+db.facilities = require('./Facilities')(sequelize, Sequelize);
 
 db.posts.belongsTo(db.categories, {
     foreignKey: 'categoryId',
@@ -89,6 +91,18 @@ db.answers.belongsTo(db.users, {
     foreignKey: 'userId',
     onDelete: 'cascade',
     as: 'user'
+});
+
+db.services.belongsToMany(db.facilities, {
+    through: 'services_facilities',
+    foreignKey: 'serviceId',
+    otherKey: 'facilityId',
+});
+
+db.facilities.belongsToMany(db.services, {
+    through: 'services_facilities',
+    foreignKey: 'facilityId',
+    otherKey: 'serviceId',
 });
 
 // db.users.sync({ alter: true });

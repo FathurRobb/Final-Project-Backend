@@ -5,6 +5,7 @@ const app = express();
 
 const db = require('./models');
 const Role = db.roles;
+const Service = db.services;
 
 const PORT = 8000;
 
@@ -16,6 +17,7 @@ app.use(express.static("assets"));
 db.sequelize.sync().then(() => {
     console.log("synchronize the database");
     // initialRole(); 
+    // initialService();
 }).catch((error) => {
     console.error(error);
 });
@@ -57,4 +59,25 @@ function initialRole() {
             role_name: 'Visitor'
         },
     );   
+}
+
+function initialService() {
+    Service.create(
+        {
+            id: 1,
+            name: 'Hospital'
+        },
+    );
+    Service.create(
+        {
+            id: 2,
+            name: 'Labs'
+        },
+    );
+    Service.create(
+        {
+            id: 3,
+            name: 'Clinic'
+        },
+    );
 }
