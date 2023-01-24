@@ -18,17 +18,30 @@ exports.actionArchived = async (req, res) => {
 
             if (existsArchive) {
                 await existsArchive.destroy();
+                const dataUser =  await Archive.findAll({
+                    where: {
+                        userId
+                    },
+                    include: ['post']
+                });
                 res.status(200).send({
-                    message: "The article is no longer archived"
-                })
+                    message: "The article is no longer archived",
+                    data: dataUser
+                });
             } else {
                 await Archive.create({
                     userId,
                     postId
                 });
-    
+                const dataUser =  await Archive.findAll({
+                    where: {
+                        userId
+                    },
+                    include: ['post']
+                });
                 return res.status(201).json({
-                    message: 'The article has been archived'
+                    message: 'The article has been archived',
+                    data: dataUser
                 });
             }
         } else {
