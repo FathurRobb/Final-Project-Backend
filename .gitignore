@@ -4,3 +4,5 @@ node_modules
 /assets/uploads/posts/*png
 /assets/uploads/users/*jpeg
 /assets/uploads/users/*png
+/assets/uploads/facilities/*jpeg
+/assets/uploads/facilities/*png

@@ -29,6 +29,8 @@ require('./routes/user.route')(app);
 require('./routes/comment.route')(app);
 require('./routes/question.route')(app);
 require('./routes/answer.route')(app);
+require('./routes/service.route')(app);
+require('./routes/facility.route')(app);
 
 app.listen(PORT, () => {
     console.log("Server is running at port " + PORT);
@@ -65,19 +67,31 @@ function initialService() {
     Service.create(
         {
             id: 1,
-            name: 'Hospital'
+            name: 'Acupunture'
         },
     );
     Service.create(
         {
             id: 2,
-            name: 'Labs'
+            name: 'Ambulance'
         },
     );
     Service.create(
         {
             id: 3,
-            name: 'Clinic'
+            name: 'BPJS (Medical Insurance)'
+        },
+    );
+    Service.create(
+        {
+            id: 4,
+            name: 'CT Scan'
+        },
+    );
+    Service.create(
+        {
+            id: 5,
+            name: 'Endoscopy'
         },
     );
 }

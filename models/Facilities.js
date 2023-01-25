@@ -10,8 +10,11 @@ module.exports = (sequelize, Sequelize) => {
             name: {
                 type: Sequelize.STRING,
             },
-            tyoe: {
+            type: {
                 type: Sequelize.INTEGER,
+            },
+            image : {
+                type: Sequelize.STRING,
             },
             description: {
                 type: Sequelize.TEXT,
